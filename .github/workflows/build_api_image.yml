@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: refback_api
+  REGISTRY: ghcr.io
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v2
+
+    - name: Log into registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+
+    - name: Build and push the image
+      run: |
+          IMAGE_ID=${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}
+
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's/[\/-]/_/g')
+
+          # tag
+          TAG=$IMAGE_ID:$VERSION
+
+          # Change all uppercase to lowercase
+          TAG=$(echo $TAG | tr '[A-Z]' '[a-z]')
+
+          echo TAG=$TAG
+        
+          cd api
+
+          # Build the Docker image
+          docker build . -f Dockerfile -t $TAG
+        
+          # Docker Push
+          docker push $TAG

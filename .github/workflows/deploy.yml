@@ -1,0 +1,21 @@
+name: Deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to the remote server
+
+    steps:
+      - name: install ssh keys
+        # check this thread to understand why its needed:
+        # <https://stackoverflow.com/a/70447517>
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.GOOGLECLOUD_SSH }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.GOOGLECLOUD_SSH_HOST }} > ~/.ssh/known_hosts
+      - name: connect and pull
+        run: |
+          ssh ${{ secrets.GOOGLECLOUD_SSH_USER }}@${{ secrets.GOOGLECLOUD_SSH_HOST }} \
+          "cd ${{ secrets.GOOGLECLOUD_SSH_DIR }} && /bin/bash restart.sh && exit"
+      - name: cleanup
+        run: rm -rf ~/.ssh
