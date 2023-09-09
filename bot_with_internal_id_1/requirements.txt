@@ -1,0 +1,5 @@
+python-i18n[yaml]
+python-telegram-bot[job-queue]==20.5
+pymongo==4.3.3
+python-dotenv
+requests
