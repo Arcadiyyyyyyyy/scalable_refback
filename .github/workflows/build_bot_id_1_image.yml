@@ -3,7 +3,7 @@ name: Build bot1
 on:
   push:
     branches:
-      - main
+      - prod
 
   workflow_dispatch:
 
