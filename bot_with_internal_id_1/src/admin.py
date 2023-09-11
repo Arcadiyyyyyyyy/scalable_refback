@@ -20,7 +20,8 @@ from .db import (
     read_chat,
     read_ticket,
     select_support_ticket,
-    write_lines_from_csv, read_all_users_with_not_null_withdraw_amounts, increase_level, decrease_level, read_bid
+    write_lines_from_csv, read_all_users_with_not_null_withdraw_amounts, increase_level, decrease_level, read_bid,
+    prune_withdraw_records
 )
 from .support import send_all_messages_from_saved
 
@@ -278,6 +279,9 @@ class NewCalculation:
                     i18n.t("translation.admin.error_during_db_prune")
                 )
                 return ConversationHandler.END
+            
+            # Prune users withdraw values
+            prune_withdraw_records()
 
             # Write data to the db
             write_lines_from_csv(Other.bot_id.value, file)

@@ -262,6 +262,31 @@ def update_profit_values_by_tg_id(tg_id: int, usdt: float, bnb: float):
     )
 
 
+def prune_withdraw_records():
+    return chat_collection.update_many(
+        {
+            "$or": [
+                {
+                    "available_to_withdraw_usdt": {
+                        "$gte": MinimumWithdrawValues.usdt.value
+                    }
+                },
+                {
+                    "available_to_withdraw_bnb": {
+                        "$gte": MinimumWithdrawValues.bnb.value
+                    }
+                }
+            ]
+        },
+        {
+            "$set": {
+                "available_to_withdraw_usdt": 0.0,
+                "available_to_withdraw_bnb": 0.0
+            }
+        }
+    )
+
+
 def read_all_users_with_not_null_withdraw_amounts():
     return chat_collection.find(
         {
