@@ -279,7 +279,7 @@ class NewCalculation:
                     i18n.t("translation.admin.error_during_db_prune")
                 )
                 return ConversationHandler.END
-            
+
             # Prune users withdraw values
             prune_withdraw_records()
 

@@ -84,8 +84,8 @@ class SetData:
     NAME, BID, WALLET = range(3)
     data = {}
 
-    @staticmethod
-    async def _cancelled(update: Update, context: CallbackContext):
+    async def _cancelled(self, update: Update, context: CallbackContext):
+        self.data[update.effective_chat.id] = {}
         await context.bot.send_message(update.effective_chat.id, i18n.t("translation.wrong_input"))
 
     async def handle_name(self, update: Update, context: CallbackContext):
@@ -107,7 +107,8 @@ class SetData:
             return
 
         if re.fullmatch(r"[a-zA-Z\u0400-\u04FF ]+", update.message.text) is not None:
-            self.data["name"] = update.message.text
+            self.data[update.effective_chat.id] = {}
+            self.data[update.effective_chat.id]["name"] = update.message.text
             await context.bot.send_message(update.effective_chat.id, i18n.t("translation.send_your_bid"))
             return self.BID
         else:
@@ -122,7 +123,7 @@ class SetData:
             return
 
         if read_bid(int(update.message.text)) is None:
-            self.data["bid"] = update.message.text
+            self.data[update.effective_chat.id]["bid"] = update.message.text
             await context.bot.send_message(
                 update.effective_chat.id,
                 i18n.t("translation.send_your_wallet"),
@@ -138,10 +139,11 @@ class SetData:
         main_handler(update.effective_chat.id, update.effective_user.first_name, update.effective_user.username)
 
         if not critical_checks(update.effective_chat.id):
+            self.data[update.effective_chat.id] = {}
             return
 
         if re.fullmatch(r"T[a-zA-Z0-9]{33}", update.message.text) is not None:
-            self.data["wallet"] = update.message.text
+            self.data[update.effective_chat.id]["wallet"] = update.message.text
             await context.bot.send_message(
                 update.effective_chat.id,
                 i18n.t("translation.formatted.successfully_registered").format(
@@ -150,16 +152,17 @@ class SetData:
             )
             update_registered_user(
                 update.effective_chat.id,
-                self.data.get("name"),
-                int(self.data.get("bid")),
-                self.data.get("wallet"),
+                self.data[update.effective_chat.id].get("name"),
+                int(self.data[update.effective_chat.id].get("bid")),
+                self.data[update.effective_chat.id].get("wallet"),
             )
             await notify_about_new_user(
-                self.data.get("name"),
-                int(self.data.get("bid")),
+                self.data[update.effective_chat.id].get("name"),
+                int(self.data[update.effective_chat.id].get("bid")),
                 context,
                 update.effective_user.username
             )
+            self.data[update.effective_chat.id] = {}
             return ConversationHandler.END
         else:
             await self._cancelled(update, context)
@@ -172,7 +175,7 @@ class SetData:
         if not critical_checks(update.effective_chat.id):
             return
 
-        self.data = {}
+        self.data[update.effective_chat.id] = {}
         await context.bot.send_message(update.effective_chat.id, i18n.t("translation.cancelled"))
         return ConversationHandler.END
 
