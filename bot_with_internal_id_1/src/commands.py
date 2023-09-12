@@ -122,7 +122,9 @@ class SetData:
         if not critical_checks(update.effective_chat.id):
             return
 
-        if read_bid(int(update.message.text)) is None:
+        user_with_bid = read_bid(int(update.message.text))
+
+        if user_with_bid is None or user_with_bid.get("chat_id") == update.effective_chat.id:
             self.data[update.effective_chat.id]["bid"] = update.message.text
             await context.bot.send_message(
                 update.effective_chat.id,
