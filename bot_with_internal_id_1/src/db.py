@@ -27,6 +27,7 @@ else:
     chat_collection = bot_db["chat"]
     support_tickets_collection = bot_db["support_tickets"]
     support_messages_collection = bot_db["support_messages"]
+    restrictions_collection = bot_db["restrictions"]
 
     csv_cache_collection = api_db["csv_cache"]
 
@@ -356,3 +357,7 @@ def decrease_level(binance_id: int):
 # TODO: add the ability to add admins of different levels
 def add_new_admin():
     raise NotImplementedError
+
+
+def read_restrictions_for_tg_id(chat_id: int):
+    return restrictions_collection.find({"chat_id": chat_id})

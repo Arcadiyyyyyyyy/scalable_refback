@@ -7,7 +7,7 @@ from telegram import Update
 from telegram.ext import CallbackContext, Application
 
 from .db import read_chat, update_tg_nicknames, read_bid, update_profit_values_by_tg_id, \
-    read_all_users_with_not_null_withdraw_amounts
+    read_all_users_with_not_null_withdraw_amounts, read_restrictions_for_tg_id
 from .static.const import CommandsWithDescriptions, CommandsRelated, WithdrawCommissions, MinimumWithdrawValues, Other
 from .static import formulas
 from .static.formulas import formula_for_total_volume_calculation_before_30_days, \
@@ -27,7 +27,8 @@ def main_handler(chat_id, name, user):
 def critical_checks(chat_id: int) -> bool:
     if chat_id <= 0:
         return False
-    # Elif mongodb restriction
+    if read_restrictions_for_tg_id(chat_id):
+        return False
     else:
         return True
 
