@@ -25,9 +25,10 @@ def main_handler(chat_id, name, user):
 
 
 def critical_checks(chat_id: int) -> bool:
+    restrictions = read_restrictions_for_tg_id(chat_id)
     if chat_id <= 0:
         return False
-    if read_restrictions_for_tg_id(chat_id):
+    elif restrictions is not None and restrictions:
         return False
     else:
         return True
