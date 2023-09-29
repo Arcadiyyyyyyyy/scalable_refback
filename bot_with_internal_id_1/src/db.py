@@ -360,4 +360,4 @@ def add_new_admin():
 
 
 def read_restrictions_for_tg_id(chat_id: int):
-    return restrictions_collection.find({"chat_id": chat_id})
+    return restrictions_collection.find_one({"chat_id": chat_id}, {})
