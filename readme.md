@@ -40,4 +40,23 @@ to practically no cap with changes of data upload to the DB
 
 # Set up instructions
 
-TODO: write after implementing issue #3
+Well, there should be docker compose, but for now, we can do it with separate containers. 
+So, first of all, find yourself a server with docker installed, that would be entirely dedicated to this service. 
+
+Then, clone the "server_scripts" folder with 
+```
+git clone --filter=blob:none --sparse https://github.com/Arcadiyyyyyyyy/scalable_refback.git
+cd scalable_refback
+git sparse-checkout add server_scripts
+```
+
+After that, create a prod.env file with the keys: 
+- TG_BOT_TOKEN=your_tg_bot_token
+- MONGO_URI=your_mongodb_srv
+- API_LOCATION=http://0.0.0.0:8000/
+
+Now you can run your service using `/bin/bash server_scripts/update_all.sh`
+
+Congrats, you are all done! 
+
+If you had any issues during the process, or need any help -- please, feel free to open issues, I will be happy to help. 
