@@ -316,7 +316,7 @@ def write_lines_from_csv(bot_internal_id: int, string_csv_rows: str):
     documents_to_insert = []
     for row in list_csv_rows:
         line_elements: list = row.split(",")
-        if len(line_elements) > 1 and line_elements[1] != "Friend's ID(Spot)":
+        if len(line_elements) > 1 and line_elements[1].replace(".", "").isdigit() is True:
             documents_to_insert.append(
                 {
                     CsvColumns.order_type.value: line_elements[0],
