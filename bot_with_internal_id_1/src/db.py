@@ -316,23 +316,23 @@ def write_lines_from_csv(bot_internal_id: int, string_csv_rows: str):
     documents_to_insert = []
     for row in list_csv_rows:
         line_elements: list = row.split(",")
-        if len(line_elements) > 1 and line_elements[1].isdigit() is True:
+        # [1:-1:] To delete ""
+        if len(line_elements) > 1 and line_elements[1][1:-1:].isdigit() is True:
             documents_to_insert.append(
                 {
-                    CsvColumns.order_type.value: line_elements[0],
-                    CsvColumns.friend_id_spot.value: int(line_elements[1]),
-                    CsvColumns.friend_id_sub_spot.value: line_elements[2],
-                    CsvColumns.commission_asset.value: line_elements[3],
-                    CsvColumns.coin_commission_earned.value: float(line_elements[4]),
-                    CsvColumns.usdt_commission_earned.value: float(line_elements[5]),
-                    CsvColumns.commission_time.value: datetime.strptime(line_elements[6], "%Y-%m-%d %H:%M:%S"),
-                    CsvColumns.registration_time.value: datetime.strptime(line_elements[7], "%Y-%m-%d %H:%M:%S"),
-                    CsvColumns.referral_id.value: str(line_elements[8]).rstrip("\n"),
+                    CsvColumns.order_type.value: line_elements[0][1:-1:],
+                    CsvColumns.friend_id_spot.value: int(line_elements[1][1:-1:]),
+                    CsvColumns.friend_id_sub_spot.value: line_elements[2][1:-1:],
+                    CsvColumns.commission_asset.value: line_elements[3][1:-1:],
+                    CsvColumns.coin_commission_earned.value: float(line_elements[4][1:-1:]),
+                    CsvColumns.usdt_commission_earned.value: float(line_elements[5][1:-1:]),
+                    CsvColumns.commission_time.value: datetime.strptime(line_elements[6][1:-1:], "%Y-%m-%d %H:%M:%S"),
+                    CsvColumns.registration_time.value: datetime.strptime(line_elements[7][1:-1:], "%Y-%m-%d %H:%M:%S"),
+                    CsvColumns.referral_id.value: str(line_elements[8][1:-1:]).rstrip("\n"),
                     "Internal ID": bot_internal_id,
-                    "Date of trial end": datetime.strptime(line_elements[7], "%Y-%m-%d %H:%M:%S") + timedelta(30)
+                    "Date of trial end": datetime.strptime(line_elements[7][1:-1:], "%Y-%m-%d %H:%M:%S") + timedelta(30)
                 }
             )
-
     return csv_cache_collection.insert_many(documents_to_insert)
 
 
