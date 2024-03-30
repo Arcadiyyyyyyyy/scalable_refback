@@ -260,6 +260,15 @@ class NewCalculation:
 
             await context.bot.send_message(update.message.from_user.id, i18n.t("translation.admin.started_calculation"))
 
+            with open("newest.csv", 'r') as file:
+                lines = file.readlines()
+
+            # TODO: hack because of the stupid binance, may shoot in the leg in the future 
+            lines[0] = '''"Order Type","Friend's ID(Spot)","Friend's sub ID (Spot)","Commission Asset","Commission Earned","Commission Earned (USDT)","Commission Time","Registration Time","Referral ID","Примечание"''' + '\n'
+
+            with open("newest.csv", 'w') as file:
+                file.writelines(lines)
+
             with open("newest.csv", "r") as f:
                 file = f.read()
 

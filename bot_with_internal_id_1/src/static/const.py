@@ -89,7 +89,7 @@ class MinimumWithdrawValues(Enum):
 
 
 class WithdrawCommissions(Enum):
-    usdt_commission = 2.0
+    usdt_commission = 4.0
     bnb_commission = 0.005
 
 
